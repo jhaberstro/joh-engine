@@ -1,0 +1,53 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_GRAPHICS_COCOA_COCOAGRAPHICSCONTEXT_HPP
+#define RS_GRAPHICS_COCOA_COCOAGRAPHICSCONTEXT_HPP
+
+#if RS_PLATFORM == RS_PLATFORM_MACOSX
+
+#include "rs/graphics/GraphicsContext.hpp"
+#include <Cocoa/Cocoa.h>
+
+namespace rs
+{
+    namespace application
+    {
+        class Window;
+        class CocoaGraphicsContext : public rs::graphics::GraphicsContext
+        {
+			RS_DECLARE_POLYMORPHIC_REFLECTION();
+	
+        public:
+
+			CocoaGraphicsContext(Window* window);
+
+            virtual ~CocoaGraphicsContext();
+
+			virtual void Update();
+            
+            virtual Boolean Begin();
+            
+            virtual Boolean End();
+
+			NSOpenGLContext* GetOpenGLContext() const;
+
+		private:
+			
+			NSOpenGLContext* openglContext_;
+        };
+
+		inline NSOpenGLContext* CocoaGraphicsContext::GetOpenGLContext() const {
+			return openglContext_;
+		}
+    }
+}
+
+#endif // RS_PLATFORM == RS_PLATFORM_MACOSX
+#endif // RS_GRAPHICS_COCOA_COCOAGRAPHICSCONTEXT_HPP
+

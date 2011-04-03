@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/graphics/opengl
+END
+GLTexture2D.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/27/trunk/src/trunk/include/rs/graphics/opengl/GLTexture2D.hpp
+END
+GLRenderer.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/34/trunk/src/trunk/include/rs/graphics/opengl/GLRenderer.hpp
+END
+GLShader.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/34/trunk/src/trunk/include/rs/graphics/opengl/GLShader.hpp
+END
+GLBuffer.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/27/trunk/src/trunk/include/rs/graphics/opengl/GLBuffer.hpp
+END
+OpenGLForwards.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/34/trunk/src/trunk/include/rs/graphics/opengl/OpenGLForwards.hpp
+END

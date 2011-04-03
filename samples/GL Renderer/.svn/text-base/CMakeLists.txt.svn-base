@@ -1,0 +1,7 @@
+link_libraries(rs rsreflection rsgraphics rsgraphics rsgraphicsopengl rsapplication rsmath)
+file(GLOB GLRENDERERSAMPLE_CPP_SRCS *.cpp)
+set_source_files_properties(
+    ${GLRENDERERSAMPLE_CPP_SRCS}
+    PROPERTIES COMPILE_FLAGS "-x objective-c++"
+)
+add_executable("GL Renderer Test" ${GLRENDERERSAMPLE_CPP_SRCS})

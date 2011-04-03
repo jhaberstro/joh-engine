@@ -1,0 +1,236 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef JOH_MATH_VECTOR3_IPP
+#define JOH_MATH_VECTOR3_IPP
+
+#ifndef JOH_MATH_VECTOR3_INCLUDE_GUARD
+#   error "Don't include this file directly. Instead include 'joh/math/Vector3.hpp'"
+#endif
+
+namespace joh
+{
+    namespace math
+    {
+        template< typename TReal > Vector3< TReal > const Vector3< TReal >::kZero(0.0, 0.0, 0.0);            
+        template< typename TReal > Vector3< TReal > const Vector3< TReal >::kOne(1.0, 1.0, 1.0);
+        template< typename TReal > Vector3< TReal > const Vector3< TReal >::kXAxis(1.0, 0.0, 0.0);
+        template< typename TReal > Vector3< TReal > const Vector3< TReal >::kYAxis(0.0, 1.0, 0.0);
+        template< typename TReal > Vector3< TReal > const Vector3< TReal >::kZAxis(0.0, 0.0, 1.0);
+
+        template< typename TReal >
+        inline Vector3< TReal > Vector3< TReal >::CrossProduct(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return ThisType(
+                (lhs.y * rhs.z) - (lhs.z * rhs.y),
+                (lhs.z * rhs.x) - (lhs.x * rhs.z),
+                (lhs.x * rhs.y) - (lhs.y * rhs.x)
+            );
+        }
+        
+        template< typename TReal >
+        inline TReal Vector3< TReal >::DotProduct(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z);
+        }
+                    
+        template< typename TReal >
+        inline TReal Vector3< TReal >::Distance(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return (lhs - rhs).Length();
+        }
+
+        template< typename TReal >
+        inline Vector3< TReal > Vector3< TReal >::Lerp(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs, TReal t) {
+            return lhs + ((rhs - lhs) * Mathf::Clamp(t));
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > Vector3< TReal >::Project(Vector3< TReal > const& vector, Vector3< TReal > const& onVector) {
+            return (ThisType::DotProduct(vector, onVector) / onVector.SquaredLength()) * onVector;
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > Vector3< TReal >::Reflect(Vector3< TReal > const& incomingDirection, Vector3< TReal > const& surfaceNormal) {
+            return (TReal(2.0) * ThisType::DotProduct(incomingDirection, surfaceNormal) * surfaceNormal) - incomingDirection;
+        }
+        
+        template< typename TReal >
+        inline TReal Vector3< TReal >::SquaredDistance(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return (lhs - rhs).SquaredLength();
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >::Vector3()
+        : x(0.0),
+          y(0.0),
+          z(0.0) {
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >::Vector3(TReal x, TReal y, TReal z)
+        : x(x),
+          y(y),
+          z(z) {
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >::Vector3(Vector3< TReal > const& other)
+        : x(other.x),
+          y(other.y),
+          z(other.z) {
+        }
+        
+        template< typename TReal >
+        inline TReal& Vector3< TReal >::operator[](uint32_t index) {
+            JOH_ASSERT(index < 3, "index is out of range");
+            return *((&x) + index);
+        }
+        
+        template< typename TReal >
+        inline TReal Vector3< TReal >::operator[](uint32_t index) const {
+            JOH_ASSERT(index < 3, "index is out of range");
+            return *((&x) + index);
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >& Vector3< TReal >::operator+=(Vector3< TReal > const& other) {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            return *this;
+        }
+
+        template< typename TReal >
+        inline Vector3< TReal >& Vector3< TReal >::operator-=(Vector3< TReal > const& other) {
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            return *this;
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >& Vector3< TReal >::operator*=(TReal scalar) {
+            x *= scalar;
+            y *= scalar;
+            z *= scalar;
+            return *this;
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal >& Vector3< TReal >::operator/=(TReal scalar) {
+            TReal invScalar = TReal(1.0) / scalar;
+            x *= invScalar;
+            y *= invScalar;
+            z *= invScalar;
+            return *this;
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal> Vector3< TReal >::operator-() const {
+            return Vector3< TReal >(-x, -y, -z);
+        }
+        
+        
+        template< typename TReal >
+        inline TReal Vector3< TReal >::Length() const {
+            return Mathf::Sqrt((x*x) + (y*y) + (z*z));
+        }
+        
+        template< typename TReal >
+        inline TReal Vector3< TReal >::SquaredLength() const {
+            return (x*x) + (y*y) + (z*z);
+        }
+        
+        template< typename TReal >
+        inline void Vector3< TReal >::Normalize() {
+            TReal invLength = TReal(1.0) / Length();
+            x *= invLength;
+            y *= invLength;
+            z *= invLength;
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > Vector3< TReal >::UnitVector() const {
+            TReal invLength = TReal(1.0) / Length();
+            return ThisType(
+                x * invLength,
+                y * invLength,
+                z * invLength
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator+(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return Vector3< TReal >(
+                lhs.x + rhs.x,
+                lhs.y + rhs.y,
+                lhs.z + rhs.z
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator-(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return Vector3< TReal >(
+                lhs.x - rhs.x,
+                lhs.y - rhs.y,
+                lhs.z - rhs.z
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator*(Vector3< TReal > const& lhs, TReal rhs) {
+            return Vector3< TReal >(
+                lhs.x * rhs,
+                lhs.y * rhs,
+                lhs.z * rhs
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator/(Vector3< TReal > const& lhs, TReal rhs) {
+            TReal invRhs = TReal(1.0) / rhs;
+            return Vector3< TReal >(
+                lhs.x * invRhs,
+                lhs.y * invRhs,
+                lhs.z * invRhs
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator*(TReal lhs, Vector3< TReal > const& rhs) {
+            return Vector3< TReal >(
+                rhs.x * lhs,
+                rhs.y * lhs,
+                rhs.z * lhs
+            );
+        }
+        
+        template< typename TReal >
+        inline Vector3< TReal > operator/(TReal lhs, Vector3< TReal > const& rhs) {
+            TReal invLhs = TReal(1.0) / lhs;
+            return Vector3< TReal >(
+                rhs.x * invLhs,
+                rhs.y * invLhs,
+                rhs.z * invLhs
+            );
+        }
+        
+        template< typename TReal >
+        inline bool operator==(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return Mathf::ApproximatelyEqual(lhs.x, rhs.x, Mathf::kEpsilon)
+                && Mathf::ApproximatelyEqual(lhs.y, rhs.y, Mathf::kEpsilon)
+                && Mathf::ApproximatelyEqual(lhs.z, rhs.z, Mathf::kEpsilon);
+        }
+        
+        template< typename TReal >
+        inline bool operator!=(Vector3< TReal > const& lhs, Vector3< TReal > const& rhs) {
+            return !(lhs == rhs);
+        }
+        
+    }
+}
+
+#endif // JOH_MATH_VECTOR3_IPP

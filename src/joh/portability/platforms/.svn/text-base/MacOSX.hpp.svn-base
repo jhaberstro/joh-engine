@@ -1,0 +1,76 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_PORTABILITY_PLATFORMS_MACOSX_HPP
+#define RS_PORTABILITY_PLATFORMS_MACOSX_HPP
+
+#include <TargetConditionals.h>
+
+#ifndef RS_PLATFORM
+#   if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+#       define RS_PLATFORM RS_PLATFORM_IPHONE
+#   elif defined(TARGET_OS_MAC)
+#       define RS_PLATFORM RS_PLATFORM_MACOSX
+#   else
+#       error "Cannot detect platform!"
+#   endif
+#endif
+
+#ifndef RS_ARCHITECTURE
+#   if TARGET_CPU_PPC
+#       define RS_ARCHITECTURE RS_ARCHITECTURE_PPC
+#   elif TARGET_CPU_PPC64
+#       define RS_ARCHITECTURE RS_ARCHITECTURE_PPC64
+#   elif TARGET_CPU_X86
+#       define RS_ARCHITECTURE RS_ARCHITECTURE_X86
+#   elif TARGET_CPU_X86_64
+#       define RS_ARCHITECTURE RS_ARCHITECTURE_X64
+#   elif TARGET_CPU_ARM
+#       define RS_ARCHITECTURE RS_ARCHITECTURE_ARM
+#   else
+#       error "Unsupported architecture!"
+#   endif
+#endif
+
+#ifndef RS_ENDIAN
+#   if TARGET_RT_LITTLE_ENDIAN
+#       define RS_ENDIAN RS_ENDIAN_LITTLE
+#   elif TARGET_RT_BIG_ENDIAN
+#       define RS_ENDIAN RS_ENDIAN_BIG
+#   else
+#       error "Unsupported runtime!"
+#   endif
+#endif
+
+#if !defined(RS_ARCHITECTURE_32BIT) && !defined(RS_ARCHITECTURE_64BIT)
+#   if TARGET_RT_64_BIT
+#       define RS_ARCHITECTURE_64BIT
+#   else
+#       define RS_ARCHITECTURE_32BIT
+#   endif
+#endif
+
+#ifndef RS_REAL
+#   define RS_REAL RS_REAL_SINGLE
+#endif
+
+#if !defined(RS_SIMD) || RS_SIMD == RS_SIMD_NONE
+#   if RS_ARCHITECTURE == RS_ARCHITECTURE_X86 || RS_ARCHITECTURE_X86 == RS_ARCHITECTURE_X64
+#       define RS_SIMD RS_SIMD_SSE 
+#   elif RS_ARCHITECTURE == RS_ARCHITECTURE_ARM
+#       ifdef __ARM_NEON__
+#           define RS_SIMD RS_SIMD_NEON
+#       else
+#           define RS_SIMD RS_SIMD_VFP
+#       endif
+#   else
+#       define RS_SIMD RS_SIMD_NONE
+#   endif
+#endif
+
+#endif // RS_PORTABILITY_PLATFORMS_MACOSX_HPP

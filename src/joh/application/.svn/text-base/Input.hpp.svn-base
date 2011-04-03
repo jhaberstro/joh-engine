@@ -1,0 +1,137 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_INPUT_HPP
+#define RS_APPLICATION_INPUT_HPP
+
+#include "rs/Portability.hpp"
+#include "rs/math/Vector2.hpp"
+#include "rs/reflection/Reflection.hpp"
+
+namespace rs
+{
+    namespace application
+    {
+        namespace KeyCode
+        {
+            enum Enum
+            {
+                Backspace,
+                Delete,
+                Tab,
+                Return,
+                Escape,
+                Space,
+                Zero,
+                One,
+                Two,
+                Three,
+                Four,
+                Five,
+                Six,
+                Seven,
+                Eight,
+                Nine,
+                Minus,
+                Equals,
+                UpArrow,
+                DownArrow,
+                RightArrow,
+                LeftArrow,
+                LeftBracket,
+                RightBracket,
+                BackSlash,
+                Semicolon,
+                SingleQuote,
+                Comma,
+                Period,
+                Slash,
+                A,
+                B,
+                C,
+                D,
+                E,
+                F,
+                G,
+                H,
+                I,
+                J,
+                K,
+                L,
+                M,
+                N,
+                O,
+                P,
+                Q,
+                R,
+                S,
+                T,
+                U,
+                V,
+                W,
+                X,
+                Y,
+                Z,
+                LeftShift,
+                RightShift,
+                LeftControl,
+                RightControl,
+                LeftAlt,
+                RightAlt,
+                LeftApple,
+                RightApple,
+                LeftMouse,
+                MiddleMouse,
+                RightMouse,
+                KeyCodeCount
+            };
+        }
+        
+        namespace internal
+        {
+            struct InputImplementation
+            {
+				int keyCount;
+                Boolean keyHeld[KeyCode::KeyCodeCount];
+                Boolean keyDown[KeyCode::KeyCodeCount];
+                Boolean keyDownQueue[KeyCode::KeyCodeCount];
+            	Boolean keyUp[KeyCode::KeyCodeCount];
+                Boolean keyUpQueue[KeyCode::KeyCodeCount];
+                rs::math::Vector2f mousePosition;
+            };
+        }
+        
+        namespace internal { class InputPeaker; }
+        class Input
+        {
+            friend class internal::InputPeaker;
+            
+            RS_DECLARE_REFLECTION();
+            
+        public:
+                   
+            static Boolean IsKeyHeld(KeyCode::Enum key);
+            
+            static Boolean IsKeyDown(KeyCode::Enum key);
+            
+            static Boolean IsKeyUp(KeyCode::Enum key);
+            
+            static Boolean IsAnyKey();
+            
+            static rs::math::Vector2f GetMousePosition();
+            
+            static void Update();
+            
+        protected:
+            
+            static internal::InputImplementation implementation_;
+        };
+    }
+}
+
+#endif // RS_APPLICATION_INPUT_HPP

@@ -1,0 +1,58 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#include <rs/Portability.hpp>
+#include <rs/graphics/GraphicsForwards.hpp>
+#include <rs/application/cocoa/CocoaApplication.hpp>
+#include <rs/application/cocoa/CocoaWindow.hpp>
+#include <rs/application/cocoa/CocoaGraphicsContext.hpp>
+
+using namespace rs;
+using namespace rs::math;
+using namespace rs::graphics;
+using namespace rs::application;
+
+class TestApp : public CocoaApplication
+{
+public:
+    
+    void OnStart() {
+        window = new CocoaWindow;
+        window->Create(
+            "Cocoa Window",
+            Vector2< rs::Int32 >(0, 0),
+            Vector2< rs::Int32 >(800, 600),
+            WindowStyle::Normal | WindowStyle::FullScreen | WindowStyle::Minimize
+        );
+        
+        context = GraphicsContextPtr(new CocoaGraphicsContext(window));
+        window->SetGraphicsContext(context);
+    }
+    
+    void OnClose() {
+        delete window;
+    }
+    
+    void Update() {
+        window->Update();
+        context->Begin();
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        context->End();
+    }
+    
+private:
+    
+    CocoaWindow* window;
+    GraphicsContextPtr context;
+};
+
+int main() {
+    TestApp app;
+    app.Launch();
+}

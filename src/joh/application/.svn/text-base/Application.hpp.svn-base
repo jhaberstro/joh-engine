@@ -1,0 +1,38 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_APPLICATION_HPP
+#define RS_APPLICATION_APPLICATION_HPP
+
+#include "rs/reflection/Reflection.hpp"
+
+namespace rs
+{
+    namespace application
+    {
+        class Application
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+            
+            virtual ~Application() { }
+            
+			virtual void OnStart() = 0;
+			
+			virtual void OnClose() = 0;
+
+			virtual void Update() { };
+						
+			// This is not meant to be overriden by the user
+			virtual void Launch() = 0;		
+        };
+    }
+}
+
+#endif // RS_APPLICATION_APPLICATION_HPP

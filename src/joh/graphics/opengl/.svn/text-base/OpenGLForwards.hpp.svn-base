@@ -1,0 +1,36 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+// http://www.opengl.org/registry/api/enum.spec
+
+#ifndef RS_GRAPHICS_OPENGL_OPENGLFORWARDS_HPP
+#define RS_GRAPHICS_OPENGL_OPENGLFORWARDS_HPP
+
+#if RS_PLATFORM == RS_PLATFORM_MACOSX
+#   include <OpenGL/gl.h>
+#   include <OpenGL/glext.h>
+#   include <OpenGL/OpenGL.h>
+#else
+#   error "Unsupported platform."
+#endif
+
+#define CHECK_GL_ERROR() \
+	{ GLenum err = glGetError(); RS_ASSERTF(err == GL_NO_ERROR, "OpenGL op failes with error: %i", err); }
+
+namespace rs
+{
+    namespace graphics
+    {
+        class GLBuffer;
+        class GLRenderer;
+        class GLShader;
+        class GLTexture2D;
+    }
+}
+
+#endif // RS_GRAPHICS_OPENGL_OPENGLFORWARDS_HPP

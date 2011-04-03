@@ -1,0 +1,58 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_GRAPHICS_GLTEXTURE2D_HPP
+#define RS_GRAPHICS_GLTEXTURE2D_HPP
+
+#include "rs/graphics/opengl/OpenGLForwards.hpp"
+#include "rs/graphics/Texture2D.hpp"	
+
+namespace rs
+{
+    namespace graphics
+    {        
+        class GLTexture2D : public Texture2D
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+            
+            GLTexture2D(Texture2DDescription const& description);
+            
+            GLTexture2D(Texture2DDescription const& description, void const* data);
+            
+            ~GLTexture2D();
+            
+            GLuint GetHandle() const;
+            
+            virtual void GenerateMipmaps();
+            
+            void SetData(void const* data, UInt8 mipLevel = 0);
+            
+            virtual void SetData(void const* data, RsSize x, RsSize y, RsSize width, RsSize height, UInt8 mipLevel = 0);
+            
+            virtual void const* GetData(UInt8 mipLevel = 0) const;
+            
+        private:
+            
+            Boolean allocated_;
+            GLuint handle_;
+            GLint glinternalFormat_;
+            GLenum glformat_;
+            GLenum gltype_;
+        };
+        
+        
+
+        inline GLuint GLTexture2D::GetHandle() const {
+            return handle_;
+        }
+    }
+}
+
+#endif // RS_GRAPHICS_GLTEXTURE2D_HPP

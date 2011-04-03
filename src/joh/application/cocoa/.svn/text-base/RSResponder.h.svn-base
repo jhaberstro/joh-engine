@@ -1,0 +1,32 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_COCOA_RSRESPONDER_H
+#define RS_APPLICATION_COCOA_RSRESPONDER_H
+#if RS_PLATFORM == RS_PLATFORM_MACOSX
+
+#include <ApplicationServices/ApplicationServices.h>
+#include <Cocoa/Cocoa.h>
+
+@interface RSResponder : NSWindowController {
+}
+
+- (void)mouseMoved:(NSEvent*)theEvent;
+- (void)mouseDown:(NSEvent*)theEvent;
+- (void)mouseUp:(NSEvent*)theEvent;
+- (void)rightMouseDown:(NSEvent*)theEvent;
+- (void)rightMouseUp:(NSEvent*)theEvent;
+- (void)otherMouseDown:(NSEvent*)theEvent;
+- (void)otherMouseUp:(NSEvent*)theEvent;
+- (void)flagsChanged:(NSEvent *)theEvent;
+- (void)keyDown:(NSEvent*)theEvent;
+- (void)keyUp:(NSEvent*)theEvent;
+@end
+
+#endif // #if RS_PLATFORM == RS_PLATFORM_MACOSX
+#endif // RS_APPLICATION_COCOA_RSRESPONDER_H

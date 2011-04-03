@@ -1,0 +1,231 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_MATH_MATHF_HPP
+#define RS_MATH_MATHF_HPP
+
+#include "rs/Portability.hpp"
+#include <math.h>
+
+namespace rs
+{
+    namespace math
+    {
+        template< typename T >
+        class Math
+        {
+        public:
+            
+            static T const kPI;
+            static T const kEpsilon;
+            static T const kToRadians;
+            static T const kToDegrees;
+    
+        public:
+            
+            static T Sin(T x);
+    
+            static T Cos(T x);
+    
+            static T Tan(T x);
+
+            static T ArcSin(T x);
+    
+            static T ArcCos(T x);
+    
+            static T ArcTan(T x);
+    
+            static T ArcTan2(T y, T x);
+  
+            static T Sqrt(T x);
+    
+            static T Abs(T x);
+    
+            static T Min(T x, T y);
+    
+            static T Max(T x, T y);
+    
+            static T Pow(T x, T power);
+    
+            static T Exp(T x);
+    
+            static T Log(T x);
+    
+            static T Log10(T x);
+    
+            static T Ceil(T x);
+    
+            static T Floor(T x);
+    
+            static T Round(T x);
+    
+            static Int32 CeilToInt(T x);
+    
+            static Int32 FloorToInt(T x);
+    
+            static Int32 RoundToInt(T x);
+    
+            static T Sign(T x);
+    
+            static T Clamp(T value, T min, T max);
+    
+            static T Lerp(T start, T end, T t);
+    
+            static Boolean ApproximatelyEqual(T left, T right, T delta);
+    
+            static T ToDegrees(T rad);
+    
+            static T ToRadians(T deg);
+    
+            static T PingPong(T value, T length);
+    
+            static T InverseLerp(T start, T end, T value);
+        };
+
+
+        template< >
+        class Math< Float >
+        {
+        public:
+            
+            static Float const kPI = 3.141592653589793f;
+            static Float const kEpsilon = 1.0e-06f;
+            static Float const kToRadians = 1.7453292519943295e-02f;
+            static Float const kToDegrees = 57.29577951308232f;
+            
+        public:
+            
+            static RS_FORCE_INLINE Float Sin(Float x) {
+                return sinf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Cos(Float x) {
+                return cosf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Tan(Float x) {
+                return tanf(x);
+            }
+
+            static RS_FORCE_INLINE Float ArcSin(Float x) {
+                return asinf(x);
+            }
+    
+            static RS_FORCE_INLINE Float ArcCos(Float x) {
+                return acosf(x);
+            }
+    
+            static RS_FORCE_INLINE Float ArcTan(Float x) {
+                return atanf(x);
+            }
+    
+            static RS_FORCE_INLINE Float ArcTan2(Float y, Float x) {
+                return atan2f(y, x);
+            }
+  
+            static RS_FORCE_INLINE Float Sqrt(Float x) {
+                return sqrtf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Abs(Float x) {
+                return fabsf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Min(Float x, Float y) {
+                return (x < y) ? x : y;
+            }
+    
+            static RS_FORCE_INLINE Float Max(Float x, Float y) {
+                return (x > y) ? x : y;
+            }
+    
+            static RS_FORCE_INLINE Float Pow(Float x, Float power) {
+                return powf(x, power);
+            }
+    
+            static RS_FORCE_INLINE Float Exp(Float x) {
+                return expf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Log(Float x) {
+                return logf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Log10(Float x) {
+                return log10f(x);
+            }
+    
+            static RS_FORCE_INLINE Float Ceil(Float x) {
+                return ceilf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Floor(Float x) {
+                return floorf(x);
+            }
+    
+            static RS_FORCE_INLINE Float Round(Float x) {
+                return roundf(x);
+            }
+    
+            static RS_FORCE_INLINE Int32 CeilToInt(Float x) {
+                return static_cast< Int32 >(ceilf(x));
+            }
+    
+            static RS_FORCE_INLINE Int32 FloorToInt(Float x) {
+                return static_cast< Int32 >(floorf(x));
+            }
+    
+            static RS_FORCE_INLINE Int32 RoundToInt(Float x) {
+                return static_cast< Int32 >(roundf(x));
+            }
+    
+            static RS_FORCE_INLINE Float Sign(Float x) {
+                return (x < 0.0f) ? -1.0f : 1.0f;
+            }
+    
+            static RS_FORCE_INLINE Float Clamp(Float value, Float min, Float max) {
+                if (value > max) {
+                    return max;
+                }
+                else if (value < min) {
+                    return min;
+                }
+        
+                return value;
+            }
+    
+            static RS_FORCE_INLINE Float Lerp(Float start, Float end, Float t) {
+                return start + ((end - start) * t);
+            }
+    
+            static RS_FORCE_INLINE Boolean ApproximatelyEqual(Float left, Float right, Float delta) {
+                return Abs(left - right) <= delta;
+            }
+    
+            static RS_FORCE_INLINE Float ToDegrees(Float rad) {
+                return rad * kToDegrees;
+            }
+    
+            static RS_FORCE_INLINE Float ToRadians(Float deg) {
+                return deg * kToRadians;
+            }
+    
+            static RS_FORCE_INLINE Float PingPong(Float value, Float length) {
+                value = (value - (floorf(value / (length * 2.0f)) * (length * 2.0f)));
+                return (length - fabsf(value - length));
+            }
+    
+            static RS_FORCE_INLINE Float InverseLerp(Float start, Float end, Float value) {
+                return (value - start) / (end - start);
+            }
+        };
+
+        typedef Math< Float > Mathf;
+    }
+}
+#endif // RS_MATH_MATHF_HPP

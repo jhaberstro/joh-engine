@@ -1,0 +1,107 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_WINDOW_HPP
+#define RS_APPLICATION_WINDOW_HPP
+
+#include "rs/math/Vector2.hpp"
+#include "rs/graphics/GraphicsContext.hpp"
+#include "rs/graphics/Renderer.hpp"
+#include "rs/reflection/Reflection.hpp"
+#include "rs/Portability.hpp"
+#include <string>
+
+namespace rs
+{
+    namespace application
+    {
+        namespace WindowStyle
+        {
+            enum Enum
+            {
+                Minimize = 1 << 0,
+                Normal = 1 << 1,
+                FullScreen = 1 << 2
+            };
+        }
+
+        class Window
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+
+            virtual ~Window() { };
+
+            virtual std::string GetTitle() const = 0;
+
+            virtual rs::math::Vector2< Int32 > GetPosition() const = 0;
+
+            virtual rs::math::Vector2< Int32 > GetSize() const = 0;
+
+            virtual WindowStyle::Enum GetStyle() const = 0;
+
+            virtual void Create(
+                std::string const& name,
+                rs::math::Vector2< Int32 > const& position,
+                rs::math::Vector2< Int32 > const& size,
+                UInt32 style
+            ) = 0;
+
+            virtual void Close() = 0;
+
+            virtual void MakeFocus() = 0;
+
+            virtual void SetTitle(std::string const& title) = 0;
+
+            virtual void SetPosition(rs::math::Vector2< Int32 > const& position) = 0;
+
+            virtual void SetSize(rs::math::Vector2< Int32 > const& size) = 0;
+
+            virtual void SetStyle(WindowStyle::Enum style) = 0;
+
+            virtual void ShowCursor(Boolean show) = 0;
+
+            virtual void SyncToVBL(Boolean sync) = 0;
+
+            virtual void Update() = 0;
+
+            rs::graphics::RendererPtr GetRenderer() const;
+
+            void SetRenderer(rs::graphics::RendererPtr const& renderer);
+            
+            rs::graphics::GraphicsContextPtr GetGraphicsContext() const;
+            
+            void SetGraphicsContext(rs::graphics::GraphicsContextPtr const& context);
+
+        protected:
+
+            rs::graphics::RendererPtr renderer_;
+            rs::graphics::GraphicsContextPtr graphicsContext_;
+        };
+
+        
+        inline rs::graphics::RendererPtr Window::GetRenderer() const {
+            return renderer_;
+        }
+
+        inline void Window::SetRenderer(rs::graphics::RendererPtr const& renderer) {
+            renderer_ = renderer;
+        }
+        
+        inline rs::graphics::GraphicsContextPtr Window::GetGraphicsContext() const {
+            return graphicsContext_;
+        }
+        
+        inline void Window::SetGraphicsContext(rs::graphics::GraphicsContextPtr const& context) {
+            graphicsContext_ = context;
+        }
+    }
+}
+
+#endif // RS_APPLICATION_WINDOW_HPP

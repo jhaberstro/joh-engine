@@ -1,0 +1,214 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_MATH_HALFFLOAT_HPP
+#define RS_MATH_HALFFLOAT_HPP
+
+#include "rs/Portability.hpp"
+
+namespace rs
+{
+    namespace math
+    {
+        class HalfFloat
+        {
+        private:
+            
+            static UInt32 const kMantissaTable[2048];
+            
+            static UInt32 const kExponentTable[64];
+            
+            static UInt16 const kOffsetTable[64];
+            
+            static UInt16 const kBaseTable[512];
+            
+            static UInt8 const kShiftTable[512];
+            
+        public:
+            
+            static UInt16 FloatToHalfFloat(Float value);
+            
+            static Float HalfFloatToFloat(UInt16 value);
+            
+            HalfFloat();
+            
+            HalfFloat(Float value);
+            
+            HalfFloat(HalfFloat const& other);
+            
+            operator Float() const;
+            
+            operator UInt16() const;
+            
+            HalfFloat& operator += (HalfFloat const other);
+
+            HalfFloat& operator -= (HalfFloat const other);
+
+            HalfFloat& operator *= (HalfFloat const other);
+
+            HalfFloat& operator /= (HalfFloat const other);
+            
+            HalfFloat operator-() const;
+            
+            HalfFloat& operator++();
+            
+            HalfFloat operator++(int);
+            
+            HalfFloat& operator--();
+            
+            HalfFloat operator--(int);
+            
+            friend HalfFloat operator+(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend HalfFloat operator-(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend HalfFloat operator*(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend HalfFloat operator/(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend Boolean operator==(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend Boolean operator!=(HalfFloat const lhs, HalfFloat const rhs);
+            
+            friend Boolean operator<(HalfFloat const lhs, HalfFloat const rhs);
+
+            friend Boolean operator<=(HalfFloat const lhs, HalfFloat const rhs);
+
+            friend Boolean operator>(HalfFloat const lhs, HalfFloat const rhs);
+
+            friend Boolean operator>=(HalfFloat const lhs, HalfFloat const rhs);
+
+        private:
+                            
+            UInt16 data_;
+        };
+        
+        
+        inline UInt16 HalfFloat::FloatToHalfFloat(Float value) {
+            UInt32 f = *(reinterpret_cast< UInt32* >(&value));
+            return static_cast< UInt16 >(kBaseTable[f >> 23] + ((f & 0x007fffff) >> kShiftTable[f >> 23]));
+        }
+        
+        inline Float HalfFloat::HalfFloatToFloat(UInt16 value) {
+            UInt32 f = kMantissaTable[kOffsetTable[value >> 10] + (value & 0x3ff)] + kExponentTable[value >> 10];
+            return *(reinterpret_cast< Float * >(&f));
+        }
+        
+        inline HalfFloat::HalfFloat()
+        : data_(0) {
+        }
+        
+        inline HalfFloat::HalfFloat(Float value)
+        : data_(FloatToHalfFloat(value)) {
+        }
+        
+        inline HalfFloat::HalfFloat(HalfFloat const& other)
+        : data_(other.data_) {
+        }
+        
+        inline HalfFloat::operator Float() const {
+            return HalfFloatToFloat(data_);
+        }
+        
+        inline HalfFloat::operator UInt16() const {
+            return data_;
+        }
+        
+        inline HalfFloat& HalfFloat::operator += (HalfFloat const other) {
+            *this = *this + other;
+            return *this;
+        }
+
+        inline HalfFloat& HalfFloat::operator -= (HalfFloat const other) {
+            *this = *this - other;
+            return *this;
+        }
+
+        inline HalfFloat& HalfFloat::operator *= (HalfFloat const other) {
+            *this = *this * other;
+            return *this;
+        }
+
+        inline HalfFloat& HalfFloat::operator /= (HalfFloat const other) {
+            *this = *this / other;
+            return *this;
+        }
+        
+        inline HalfFloat HalfFloat::operator-() const {
+            HalfFloat result;
+            result.data_ = static_cast< UInt16 >(data_ ^ 0x8000);
+            return result;
+        }
+        
+        inline HalfFloat& HalfFloat::operator++() {
+            Float f = HalfFloatToFloat(data_);
+            data_ = FloatToHalfFloat(++f);
+            return *this;
+        }
+        
+        inline HalfFloat HalfFloat::operator++(int) {
+            HalfFloat result(*this);
+            ++*this;
+            return result;
+        }
+        
+        inline HalfFloat& HalfFloat::operator--() {
+            Float f = HalfFloatToFloat(data_);
+            data_ = FloatToHalfFloat(--f);
+            return *this;
+        }
+        
+        inline HalfFloat HalfFloat::operator--(int) {
+            HalfFloat result(*this);
+            ++*this;
+            return result;
+        }
+        
+        inline HalfFloat operator+(HalfFloat const lhs, HalfFloat const rhs) {
+            return HalfFloat(Float(lhs) + Float(rhs));
+        }
+        
+        inline HalfFloat operator-(HalfFloat const lhs, HalfFloat const rhs) {
+            return HalfFloat(Float(lhs) - Float(rhs));
+        }
+        
+        inline HalfFloat operator*(HalfFloat const lhs, HalfFloat const rhs) {
+            return HalfFloat(Float(lhs) * Float(rhs));
+        }
+        
+        inline HalfFloat operator/(HalfFloat const lhs, HalfFloat const rhs) {
+            return HalfFloat(Float(lhs) / Float(rhs));
+        }
+        
+        inline Boolean operator==(HalfFloat const lhs, HalfFloat const rhs) {
+            return lhs.data_ == rhs.data_;
+        }
+        
+        inline Boolean operator!=(HalfFloat const lhs, HalfFloat const rhs) {
+            return lhs.data_ != rhs.data_;
+        }
+        
+        inline Boolean operator<(HalfFloat const lhs, HalfFloat const rhs) {
+            return Float(lhs) < Float(rhs);
+        }
+
+        inline Boolean operator<=(HalfFloat const lhs, HalfFloat const rhs) {
+            return Float(lhs) <= Float(rhs);
+        }
+
+        inline Boolean operator>(HalfFloat const lhs, HalfFloat const rhs) {
+            return Float(lhs) > Float(rhs);
+        }
+
+        inline Boolean operator>=(HalfFloat const lhs, HalfFloat const rhs) {
+            return Float(lhs) >= Float(rhs);
+        }
+    }
+}
+
+#endif // RS_MATH_HALFFLOAT_HPP

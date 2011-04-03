@@ -1,0 +1,48 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_COCOA_COCOAPPLICATION_HPP
+#define RS_APPLICATION_COCOA_COCOAPPLICATION_HPP
+#if RS_PLATFORM == RS_PLATFORM_MACOSX
+
+#include "rs/application/Application.hpp"
+
+extern "C" {
+#include <ApplicationServices/ApplicationServices.h>
+#include <Cocoa/Cocoa.h>
+}
+
+
+@class RSApplicationDelegate;
+namespace rs
+{
+    namespace application
+    {
+        class CocoaApplication : public Application
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+				
+            CocoaApplication();
+            
+            virtual ~CocoaApplication();	
+					
+			// This is not meant to be overriden by the user
+		    void Launch();
+			
+		private:
+		    
+            RSApplicationDelegate* appDelegate_;   		
+            NSAutoreleasePool* pool_;
+        };
+    }
+}
+
+#endif // RS_PLATFORM == RS_PLATFORM_MACOSX
+#endif

@@ -1,0 +1,22 @@
+//
+//  debug.xcconfig
+//  joh-engine
+//
+//  Created by Jedd Haberstro on 4/2/11.
+//  Copyright 2011 Student. All rights reserved.
+//
+
+#include "common.xcconfig"
+
+JOH_CONFIGURATION = debug
+
+GCC_PREPROCESSOR_DEFINITIONS = JOH_DEBUG
+
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES
+GCC_DEBUGGING_SYMBOLS = full
+GCC_OPTIMIZATION_LEVEL = 0
+OTHER_CPLUSPLUSFLAGS = $(OTHER_CFLAGS)
+
+GCC_ENABLE_CPP_EXCEPTIONS = YES
+GCC_ENABLE_CPP_RTTI = YES
+GCC_ENABLE_OBJC_EXCEPTIONS = YES

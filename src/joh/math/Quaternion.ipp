@@ -1,0 +1,373 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef JOH_MATH_QUATERNION_IPP
+#define JOH_MATH_QUATERNION_IPP
+
+#ifndef JOH_MATH_QUATERNION_INCLUDE_GUARD
+#   error "Don't include this file directly. Instead include 'joh/math/Quaternion.hpp'"
+#endif
+
+namespace joh
+{
+    namespace math
+    {
+        template< typename TReal >
+        Quaternion< TReal > Quaternion< TReal >::Slerp(Quaternion< TReal > const& start, Quaternion< TReal > const& finish, TReal delta) {
+            TReal dot = Quaternion< TReal >::DotProduct(start, finish);
+            TReal second = 1.0f;
+            
+            if (dot < 0.0f) {
+                dot = -dot;
+                second = -1.0f;
+            }
+            
+            if ((1.0f - dot) <= Math< TReal >::kEpsilon) {
+                return Quaternion< TReal >::Lerp(start, finish, delta);
+            }
+            
+            TReal theta = Math< TReal >::Acos(dot);
+            TReal sinInv = TReal(1.0f) / Math< TReal >::Sin(theta);
+            TReal first = Math< TReal >::Sin((TReal(1.0f) - delta) * theta) * sinInv;
+            second *= Math< TReal >::Sin(delta * theta) * sinInv;
+            
+            return Quaternion< TReal >(
+                first * start.x + second * first.x,
+                first * start.y + second * first.y,
+                first * start.z + second * first.z,
+                first * start.w + second * first.w
+            );
+        }
+
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > Quaternion< TReal >::Lerp(Quaternion< TReal > const& start, Quaternion< TReal > const& finish, TReal delta) {
+            return start + ((finish - start) * delta);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE TReal Quaternion< TReal >::DotProduct(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return ((lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z) + (lhs.w * rhs.w));
+        }
+                    
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >::Quaternion(TReal x, TReal y, TReal z, TReal w)
+        : x(x),
+          y(y),
+          z(z),
+          w(w) {
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >::Quaternion(Vector3< TReal > const& axis, TReal radianAngle) {
+            FromAxisAngle(axis, radianAngle);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >::Quaternion(TReal eulerAngleX, TReal eulerAngleY, TReal eulerAngleZ) {
+            FromEulerAngles(eulerAngleX, eulerAngleY, eulerAngleZ);
+        }
+        
+        //Quaternion(Matrix3x3< TReal > matrix);
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >::Quaternion(Quaternion< TReal > const& other)
+        : x(other.x),
+          y(other.y),
+          z(other.z),
+          w(other.w) {
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE TReal& Quaternion< TReal >::operator[](uint32_t index) {
+            JOH_ASSERT(index < 3, "index is out of range");
+            return &x + index;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE TReal Quaternion< TReal >::operator[](uint32_t index) const {
+            JOH_ASSERT(index < 3, "index is out of range");
+            return &x + index;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >& Quaternion< TReal >::operator+=(Quaternion< TReal > const& right) {
+            x += right.x;
+            y += right.y;
+            z += right.z;
+            w += right.w;
+            return *this;
+        }
+
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >& Quaternion< TReal >::operator-=(Quaternion< TReal > const& right) {
+            x -= right.x;
+            y -= right.y;
+            z -= right.z;
+            w -= right.w;
+            return *this;
+        }
+
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >& Quaternion< TReal >::operator*=(Quaternion< TReal > const& right) {
+            x = w * right.x + x * right.w + y * right.z - z * right.y;
+            y = w * right.y - x * right.z + y * right.w + z * right.x;
+            z = w * right.z + x * right.y - y * right.x + z * right.w;
+            w = w * right.w - x * right.x - y * right.y - z * right.z;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >& Quaternion< TReal >::operator*=(TReal right) {
+            x *= right;
+            y *= right;
+            z *= right;
+            w *= right;
+            return *this;
+        }
+
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal >& Quaternion< TReal >::operator/=(TReal right) {
+            TReal invRight = TReal(1.0) / right;
+            x *= invRight;
+            y *= invRight;
+            z *= invRight;
+            w *= invRight;
+            return *this;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > Quaternion< TReal >::operator-() const {
+            return Quaternion(-x, -y, -z, -w);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > Quaternion< TReal >::Inverse() const {
+            TReal invSquaredLength = TReal(1.0) / SquaredLength();
+            JOH_ASSERT(invSquaredLength > TReal(0.0f), "squaredLength must be greater than 0");
+            return Quaternion(
+                -x * invSquaredLength,
+                -y * invSquaredLength,
+                -z * invSquaredLength,
+                 w * invSquaredLength
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE TReal Quaternion< TReal >::Length() const {
+            return Math< TReal >::Sqrt((x * x) + (y * y) + (z * z) + (w * w));
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE TReal Quaternion< TReal >::SquaredLength() const {
+            return ((x * x) + (y * y) + (z * z) + (w * w));
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE void Quaternion< TReal >::Normalize() {
+            TReal invLength = TReal(1.0) / Length();
+            *this *= invLength;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > Quaternion< TReal >::UnitQuaternion() const {
+            TReal invLength = TReal(1.0) / Length();
+            return Quaternion< TReal >(
+                x * invLength,
+                y * invLength,
+                z * invLength,
+                w * invLength
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Vector3< TReal > Quaternion< TReal >::Transform(Vector3< TReal > const& vector) const {
+            // Since vec.W == 0, we can optimize quat * vec * quat^-1 as follows:
+            // vec + 2.0 * cross(quat.xyz, cross(quat.xyz, vec) + quat.w * vec)
+            typedef Vector3< TReal > VectorType;
+            VectorType quat(x, y, z);
+            return vector + (TReal(2.0) * VectorType::CrossProduct(quat, VectorType::CrossProduct(quat, vector) + (w * vector)));
+        }
+
+        template< typename TReal >
+        JOH_FORCE_INLINE Vector3< TReal > Quaternion< TReal >::InverseTransform(Vector3< TReal > const& vector) const {
+            typedef Vector3< TReal > VectorType;
+            VectorType quat(-x, -y, -z);
+            return vector + (TReal(2.0) * VectorType::CrossProduct(quat, VectorType::CrossProduct(quat, vector) + (w * vector)));
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE void Quaternion< TReal >::ToAxisAngle(Vector3< TReal >& outVector, TReal& outAngle) const {
+            TReal squaredLength = SquaredLength();
+            if (squaredLength > TReal(0.0)) {
+                outAngle = TReal(2.0) * Math< TReal >::Acos(w);
+                TReal invLength = TReal(1.0) / Math< TReal >::Sqrt(squaredLength);
+                outVector.x = x * invLength;
+                outVector.y = y * invLength;
+                outVector.z = z * invLength;
+            }
+            else {
+                outAngle = TReal(0.0);
+                outVector = Vector3< TReal >::kXAxis;
+            }
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE void Quaternion< TReal >::FromAxisAngle(Vector3< TReal > const& axis, TReal angle) {
+            JOH_ASSERT(Math< TReal >::ApproximatelyEqual(axis.Length(), TReal(1.0)), "vector must be unit length");
+            TReal halfAngle = TReal(0.5) * angle;
+            TReal sinTheta = Math< TReal >::Sin(halfAngle);
+            w = Math< TReal >::Cos(halfAngle);
+            x = sinTheta * axis.x;
+            y = sinTheta * axis.y;
+            z = sinTheta * axis.z;
+        }
+        
+        template< typename TReal >
+        void Quaternion< TReal >::ToEulerAngles(TReal& x, TReal& y, TReal& z) const {
+            TReal xx = x * x;
+            TReal yy = y * y;
+            TReal zz = z * z;
+            TReal ww = w * w;
+            TReal unit = xx + yy + zz + ww;
+            TReal half = unit * TReal(0.5);
+            TReal test = x * y + z * w;
+            
+            if (test > half) {
+                return Vector3< TReal >(0.0, TReal(2.0) * Math< TReal >::Atan2(x, w), Math< TReal >::kPI * 0.5);
+            }
+            
+            if (test < -half) {
+                return Vector3< TReal >(0.0, TReal(-2.0) * Math< TReal >::Atan2(x, w), Math< TReal >::kPI * -0.5);
+            }
+            
+            return Vector3< TReal >(
+                Math< TReal >::Atan2(TReal(2.0) * x * w - TReal(2.0) * y * z , -xx + yy - zz + ww),
+            	Math< TReal >::Atan2(TReal(2.0) * y * w - TReal(2.0) * x * z ,  xx - yy - zz + ww),
+            	Math< TReal >::Asin (TReal(2.0) * test / unit)
+            );
+        }
+        
+        template< typename TReal >
+        void Quaternion< TReal >::FromEulerAngles(TReal xAngle, TReal yAngle, TReal zAngle) {
+            TReal halfX = xAngle * TReal(0.5);
+            TReal halfY = yAngle * TReal(0.5);
+            TReal halfZ = zAngle * TReal(0.5);
+            
+            TReal sinX = Math< TReal >::Sin(halfX);
+            TReal sinY = Math< TReal >::Sin(halfY);
+            TReal sinZ = Math< TReal >::Sin(halfZ);
+            TReal cosX = Math< TReal >::Cos(halfX);
+            TReal cosY = Math< TReal >::Cos(halfY);
+            TReal cosZ = Math< TReal >::Cos(halfZ);
+            
+            TReal xx = sinY * sinZ;
+            TReal yy = sinY * cosZ;
+            TReal zz = cosY * sinZ;
+            TReal ww = cosY * cosZ;
+            
+            x = ww * sinX + xx * cosX;
+        	y = zz * sinX + yy * cosX;
+        	z = zz * cosX - yy * sinX;
+        	w = ww * cosX - xx * sinX;
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Vector3< TReal > Quaternion< TReal >::GetForwardDirection() const {
+             // Vector3(0, 0, 1) * (*this)
+            return Transform(Vector3< TReal >::kZAxis);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Vector3< TReal > Quaternion< TReal >::GetUpDirection() const {
+            // Vector3(0, 1, 0) * (*this)
+            return Transform(Vector3< TReal >::kYAxis);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Vector3< TReal > Quaternion< TReal >::GetRightDirection() const {
+            // Vector3(1, 0, 0) * (*this)
+            return Transform(Vector3< TReal >::kZAxis);
+        }
+        
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator+(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return Quaternion< TReal >(
+                lhs.x + rhs.x,
+                lhs.y + rhs.y,
+                lhs.z + rhs.z,
+                lhs.w + rhs.w
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator-(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return Quaternion< TReal >(
+                lhs.x - rhs.x,
+                lhs.y - rhs.y,
+                lhs.z - rhs.z,
+                lhs.w - rhs.w
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator*(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return Quaternion< TReal >(
+                lhs.w * rhs.x + lhs.x * rhs.w + lhs.y * rhs.z - lhs.z * rhs.y,
+                lhs.w * rhs.y - lhs.x * rhs.z + lhs.y * rhs.w + lhs.z * rhs.x,
+                lhs.w * rhs.z + lhs.x * rhs.y - lhs.y * rhs.x + lhs.z * rhs.w,
+                lhs.w * rhs.w - lhs.x * rhs.x - lhs.y * rhs.y - lhs.z * rhs.z
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator*(Quaternion< TReal > const& lhs, TReal rhs) {
+            return Quaternion< TReal >(
+                lhs.x * rhs,
+                lhs.y * rhs,
+                lhs.z * rhs,
+                lhs.w * rhs
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator*(TReal lhs, Quaternion< TReal > const& rhs) {
+            return Quaternion< TReal >(
+                lhs * rhs.x,
+                lhs * rhs.y,
+                lhs * rhs.z,
+                lhs * rhs.w
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE Quaternion< TReal > operator/(Quaternion< TReal > const& lhs, TReal const& rhs) {
+            TReal invRhs = TReal(1.0) / rhs;
+            return Quaternion< TReal >(
+                lhs.x * invRhs,
+                lhs.y * invRhs,
+                lhs.z * invRhs,
+                lhs.w * invRhs
+            );
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE bool operator==(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return Mathf::ApproximatelyEqual(lhs.x, rhs.x, Mathf::kEpsilon)
+                && Mathf::ApproximatelyEqual(lhs.y, rhs.y, Mathf::kEpsilon)
+                && Mathf::ApproximatelyEqual(lhs.z, rhs.z, Mathf::kEpsilon)
+                && Mathf::ApproximatelyEqual(lhs.w, rhs.w, Mathf::kEpsilon);
+        }
+        
+        template< typename TReal >
+        JOH_FORCE_INLINE bool operator!=(Quaternion< TReal > const& lhs, Quaternion< TReal > const& rhs) {
+            return !(lhs == rhs);
+        }
+    }
+}
+
+#endif // JOH_MATH_QUATERNION_IPP

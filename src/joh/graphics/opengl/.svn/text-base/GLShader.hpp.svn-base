@@ -1,0 +1,107 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_GRAPHICS_OPENGL_GLSHADER_HPP
+#define RS_GRAPHICS_OPENGL_GLSHADER_HPP
+
+#include "rs/graphics/opengl/OpenGLForwards.hpp"
+#include "rs/graphics/Shader.hpp"
+#include <map>
+#include <string>
+
+namespace rs
+{
+    namespace graphics
+    {
+        namespace internal
+        {
+            struct Constant
+            {
+                Char* name;
+                UInt8* data;
+                GLuint index;
+                GLint size;
+                GLenum type;
+                Boolean dirty;
+            };
+            
+            struct Sampler
+            {
+                Char* name;
+                GLint location;
+                GLint textureUnit;
+                GLenum type;
+            };
+        }
+        
+        class GLShader : public Shader
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+			friend class GLRenderer;
+            
+        private:
+            
+            typedef std::map< std::string, Int32 > AttributeSemanticIndexMap;
+            
+        public:
+            
+            GLShader(ShaderDescription const& description);
+            
+            virtual ~GLShader();
+            
+            GLuint GetProgramHandle() const;
+            
+            GLuint GetVertexShaderHandle() const;
+            
+            GLuint GetFragmentShaderHandle() const;
+            
+            GLuint GetGeometryShaderHandle() const;
+            
+            Int32 GetAttributeIndex(Char const* semanticName) const;
+            
+            virtual void Apply();
+                        
+        protected:
+            
+            virtual void SetRawConstant(Char const* name, UInt8 const* data, RsSize dataSize);
+
+			int GetSamplersUnit(Char const* name);
+            
+        protected:
+            
+            AttributeSemanticIndexMap attributesSemanticIndices_;
+            internal::Constant* uniforms_;
+            internal::Sampler* samplers_;
+			GLuint programHandle_;
+            GLuint vertexShaderHandle_;
+            GLuint fragmentShaderHandle_;
+            GLuint geometryShaderHandle_;
+            Int32 uniformsCount_;
+            Int32 samplerCount_;
+        };
+        
+                
+        inline GLuint GLShader::GetProgramHandle() const {
+            return programHandle_;
+        }
+        
+        inline GLuint GLShader::GetVertexShaderHandle() const {
+            return vertexShaderHandle_;
+        }
+        
+        inline GLuint GLShader::GetFragmentShaderHandle() const {
+            return fragmentShaderHandle_;
+        }
+        
+        inline GLuint GLShader::GetGeometryShaderHandle() const {
+            return geometryShaderHandle_;
+        }
+    }
+}
+
+#endif // RS_GRAPHICS_OPENGL_GLSHADER_HPP

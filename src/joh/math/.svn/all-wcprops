@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/17/trunk/src/trunk/include/rs/math
+END
+Mathf.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/27/trunk/src/trunk/include/rs/math/Mathf.hpp
+END
+HalfFloat.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/19/trunk/src/trunk/include/rs/math/HalfFloat.hpp
+END
+Matrix4x4.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/26/trunk/src/trunk/include/rs/math/Matrix4x4.hpp
+END
+Vector2.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/27/trunk/src/trunk/include/rs/math/Vector2.hpp
+END
+Matrix4x4.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/32/trunk/src/trunk/include/rs/math/Matrix4x4.ipp
+END
+Quaternion.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/math/Quaternion.hpp
+END
+Vector3.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/math/Vector3.hpp
+END
+Vector2.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/27/trunk/src/trunk/include/rs/math/Vector2.ipp
+END
+Quaternion.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/math/Quaternion.ipp
+END
+Vector3.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/math/Vector3.ipp
+END
+Vector4.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/18/trunk/src/trunk/include/rs/math/Vector4.hpp
+END
+Vector4.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/32/trunk/src/trunk/include/rs/math/Vector4.ipp
+END

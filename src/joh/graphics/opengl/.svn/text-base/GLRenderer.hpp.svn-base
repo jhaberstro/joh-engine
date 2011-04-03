@@ -1,0 +1,69 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_GRAPHICS_OPENGL_GLRENDERER_HPP
+#define RS_GRAPHICS_OPENGL_GLRENDERER_HPP
+
+#include "rs/graphics/GraphicsForwards.hpp"
+#include "rs/graphics/Renderer.hpp"
+#include <vector>
+
+namespace rs
+{   
+    namespace graphics
+    {
+        class GLRenderer : public Renderer
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+            
+            void Apply();
+            
+            void ApplyInputAssemberState();
+            
+            void ApplyShaderState();
+
+			void ApplyTextures();
+            
+            VertexFormatID CreateVertexFormat(InputElement const* inputElements, RsSize count);
+            
+            BufferPtr CreateBuffer(BufferDescription const& desciption, void const* data);
+            
+            ShaderPtr CreateShader(ShaderDescription const& desciption);
+
+			Texture2DPtr CreateTexture2D(Texture2DDescription const& description);
+
+			Texture2DPtr CreateTexture2D(Texture2DDescription const& description, void const* data);
+            
+            void Draw(UInt32 startVertexLocation, UInt32 verticeCount);
+            
+            void DrawIndexed(UInt32 startIndexLocation, UInt32 indiceCount);
+
+            PrimitiveTopology::Enum GetPrimitiveTopology() const;
+            
+            void SetPrimitiveTopology(PrimitiveTopology::Enum topology);
+            
+            void SetIndexBuffer(BufferPtr const& indexBuffer);
+            
+            void SetShader(ShaderPtr const& shader);
+            
+            void SetTexture(Char const* name, Texture2DPtr const& texture);
+			
+			void SetVertexBuffer(BufferPtr const& vertexBuffer, UInt32 const stream, UIntPtr const offset);
+            
+            void SetVertexFormat(VertexFormatID vertexFormat, ShaderPtr const& shader);
+            
+        protected:
+            
+            PrimitiveTopology::Enum currentPrimitiveTopology_;
+        };
+    }
+}
+
+#endif // RS_GRAPHICS_OPENGL_GLRENDERER_HPP

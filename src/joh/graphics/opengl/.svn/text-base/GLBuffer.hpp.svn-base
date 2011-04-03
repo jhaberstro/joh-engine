@@ -1,0 +1,59 @@
+//
+// RS Game Framework
+// Copyright © 2010 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_GRAPHICS_OPENGL_GLBUFFER_HPP
+#define RS_GRAPHICS_OPENGL_GLBUFFER_HPP
+
+#include "rs/graphics/Buffer.hpp"
+#include "rs/graphics/opengl/OpenGLForwards.hpp"
+
+namespace rs
+{
+    namespace graphics
+    {
+        class GLBuffer : public Buffer
+        {
+            RS_DECLARE_POLYMORPHIC_REFLECTION();
+            
+        public:
+            
+            GLBuffer(BufferDescription const& description);
+
+            GLBuffer(BufferDescription const& description, void const* source);
+            
+            ~GLBuffer();
+            
+            GLuint GetHandle() const;
+            
+            GLenum GetTarget() const;
+            
+            virtual void Map(void* data, ResourceAccess::Enum mapType);
+            
+            virtual void Unmap();
+            
+            virtual void SetData(void* source, UInt32 size, UInt32 offset = 0);
+                        
+        private:
+            
+            GLuint handle_;
+            GLenum target_;
+        };
+        
+                
+        inline GLuint GLBuffer::GetHandle() const {
+            return handle_;
+        }
+        
+        inline GLenum GLBuffer::GetTarget() const {
+            return target_;
+        }
+        
+    }
+}
+
+#endif // RS_GRAPHICS_OPENGL_GLBUFFER_HPP

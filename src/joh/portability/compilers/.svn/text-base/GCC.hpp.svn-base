@@ -1,0 +1,193 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_PORTABILITY_COMPILERS_GCC_HPP
+#define RS_PORTABILITY_COMPILERS_GCC_HPP
+
+#include <climits>
+#include "rs/MetaFacilities.hpp"
+
+#define RS_GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#if RS_GCC_VERSION < 40000
+#   error "Unsupported GCC version!"
+#endif
+#undef RS_GCC_VERSION
+
+#ifndef RS_COMPILER
+#   define RS_COMPILER RS_COMPILER_GCC
+#endif
+
+#ifndef RS_EXIT
+#   define RS_EXIT __builtin_trap
+#endif
+
+//#ifndef RS_PUSH_PACK
+//#   define RS_PUSH_PACK(x) #pragma pack(push, x)
+//#endif
+
+//#ifndef RS_POP_PACK
+//#   define RS_POP_PACK #pragma pack(pop)
+//#endif
+
+#ifndef RS_ALIGN
+#   define RS_ALIGN(declaration, alignment) declaration __attribute__((aligned(alignment)))
+#endif
+
+#ifndef RS_FORCE_INLINE
+#   define RS_FORCE_INLINE __inline __attribute__((always_inline))
+#endif
+
+#ifndef RS_RESTRICT
+#   define RS_RESTRICT __restrict
+#endif
+
+#ifndef RS_UNUSED
+#   define RS_UNUSED(expression) ((void)sizeof((expression)))
+#endif
+
+
+namespace rs
+{
+    // Int8 and UInt8
+#   if CHAR_BIT == 8
+        typedef signed char Int8;
+        typedef unsigned char UInt8;
+#   else
+#       error "Unable to define Int8 and UInt8!"
+#   endif
+
+    // Int16 and UInt16
+#   if USHRT_MAX == 0xffff
+        typedef signed short Int16;
+        typedef unsigned short UInt16;
+#   else
+#       error "Unable to define Int16 and UInt16!"
+#   endif
+
+
+    // Int32 and UInt32
+#   if UINT_MAX == 0xffffffff
+        typedef signed int Int32;
+        typedef unsigned int UInt32;
+#   elif ULONG_MAX == 0xffffffff
+        typedef signed long Int32;
+        typedef unsigned long UInt32;
+#   else
+#       error "Unable to define Int32 and UInt32!"
+#   endif
+
+    // Int64 and UInt64
+    typedef meta::If
+    <
+        sizeof(long) == 8,
+        signed long,
+        meta::If
+        <
+            sizeof(long long) == 8,
+            signed long long,
+            meta::FalseType
+        >::Result
+    >::Result Int64;
+    
+    typedef meta::If
+    <
+        sizeof(long) == 8,
+        unsigned long,
+        meta::If
+        <
+            sizeof(long long) == 8,
+            unsigned long long,
+            meta::FalseType
+        >::Result
+    >::Result UInt64;
+    RS_ALT_STATIC_ASSERT(((meta::IsSame< Int64, meta::FalseType >::Value) == false));
+    RS_ALT_STATIC_ASSERT((meta::IsSame< UInt64, meta::FalseType >::Value) == false);
+
+
+    // IntPtr and UIntPtr
+    typedef meta::If
+    <
+        sizeof(void*) == sizeof(Int16),
+        Int16,
+        meta::If
+        <
+            sizeof(void*) == sizeof(Int32),
+            Int32,
+            meta::If
+            <
+                sizeof(void*) == sizeof(Int64),
+                Int64,
+                meta::FalseType
+            >::Result
+        >::Result
+    >::Result IntPtr;
+    
+    typedef meta::If
+    <
+        sizeof(void*) == sizeof(UInt16),
+        UInt16,
+        meta::If
+        <
+            sizeof(void*) == sizeof(UInt32),
+            UInt32,
+            meta::If
+            <
+                sizeof(void*) == sizeof(UInt64),
+                UInt64,
+                meta::FalseType
+            >::Result
+        >::Result
+    >::Result UIntPtr;
+    RS_ALT_STATIC_ASSERT((meta::IsSame< IntPtr, meta::FalseType >::Value) == false);
+    RS_ALT_STATIC_ASSERT((meta::IsSame< UIntPtr, meta::FalseType >::Value) == false);
+    
+
+    // RsSize and RsSSize
+    typedef meta::If
+    <
+        sizeof(sizeof(int)) == sizeof(UInt32), 
+        UInt32, 
+        meta::If
+        <
+            sizeof(sizeof(int)) == sizeof(UInt64),
+            UInt64,
+            meta::FalseType
+        >::Result 
+    >::Result RsSize;
+    
+    typedef meta::If
+    <
+        sizeof(sizeof(int)) == sizeof(Int32), 
+        Int32, 
+        meta::If
+        <
+            sizeof(sizeof(int)) == sizeof(Int64),
+            Int64,
+            meta::FalseType
+        >::Result 
+    >::Result RsSSize;
+    RS_ALT_STATIC_ASSERT((meta::IsSame< RsSize, meta::FalseType >::Value) == false);
+    RS_ALT_STATIC_ASSERT((meta::IsSame< RsSSize, meta::FalseType >::Value) == false);
+
+    
+    typedef bool Boolean;
+    typedef char Char8;
+    // TODO - Real encodings
+    typedef Char8 Char;
+    
+    typedef float Float;
+    typedef double Double;
+
+#   if RS_REAL == RS_REAL_SINGLE
+        typedef Float Real;
+#   else
+        typedef Double Real;
+#   endif
+}
+
+#endif // RS_PORTABILITY_COMPILERS_GCC_HPP

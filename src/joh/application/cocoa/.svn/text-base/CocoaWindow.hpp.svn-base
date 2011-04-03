@@ -1,0 +1,108 @@
+//
+// RS Game Framework
+// Copyright © 2009 Jedd Haberstro
+// jhaberstro@gmail.com
+// 
+// $Id:
+//
+
+#ifndef RS_APPLICATION_COCOA_COCOAWINDOW_HPP
+#define RS_APPLICATION_COCOA_COCOAWINDOW_HPP
+#if RS_PLATFORM == RS_PLATFORM_MACOSX
+
+#include "rs/application/Window.hpp"
+
+extern "C" {
+#include <ApplicationServices/ApplicationServices.h>
+#include <Cocoa/Cocoa.h>
+}
+
+
+namespace rs
+{
+    namespace application
+    {
+        class CocoaWindow : public Window
+        {
+			RS_DECLARE_POLYMORPHIC_REFLECTION();
+			
+		protected:
+			
+			enum WindowStyleRestricitions
+			{
+				kWindowOnly,
+				kFullscreenOnly,
+				kWindowOrFullscreen
+			};
+	
+        public:
+
+            virtual ~CocoaWindow();
+
+            virtual std::string GetTitle() const;
+
+            virtual rs::math::Vector2< Int32 > GetPosition() const;
+
+            virtual rs::math::Vector2< Int32 > GetSize() const;
+
+            virtual WindowStyle::Enum GetStyle() const;
+
+            virtual void Create(
+                std::string const& name,
+                rs::math::Vector2< Int32 > const& position,
+                rs::math::Vector2< Int32 > const& size,
+                UInt32 style
+            );
+
+            virtual void Close();
+
+            virtual void MakeFocus();
+
+            virtual void SetTitle(std::string const& title);
+
+            virtual void SetPosition(rs::math::Vector2< Int32 > const& position);
+
+            virtual void SetSize(rs::math::Vector2< Int32 > const& size);
+
+            virtual void SetStyle(WindowStyle::Enum style);
+
+            virtual void ShowCursor(Boolean show);
+
+            virtual void SyncToVBL(Boolean sync);
+
+            virtual void Update();
+
+			NSWindow* GetCocoaWindow() const;
+			
+			NSView* GetCocoaView() const;
+			
+			NSOpenGLPixelFormat* GetOpenGLPixelFormat() const;
+
+        protected:
+			
+            NSWindow* window_;
+            NSView* view_;
+			NSOpenGLPixelFormat* pixelFormat_;
+            NSAutoreleasePool* pool_;
+			WindowStyleRestricitions windowStyleRestriction_;
+			Boolean created_;
+        };
+
+				
+		inline NSWindow* CocoaWindow::GetCocoaWindow() const {
+			return window_;
+		}
+		
+		inline NSView* CocoaWindow::GetCocoaView() const {
+			return view_;
+		}
+		
+		inline NSOpenGLPixelFormat* CocoaWindow::GetOpenGLPixelFormat() const {
+			RS_ASSERT(created_, "Window has not yet been created");
+			return pixelFormat_;
+		}
+    }
+}
+
+#endif // // RS_PLATFORM == RS_PLATFORM_MACOSX
+#endif // RS_APPLICATION_COCOA_COCOAWINDOW_HPP
